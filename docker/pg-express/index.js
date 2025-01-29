@@ -6,6 +6,8 @@ const port = 8080;
 
 app.use(express.json());
 
+app.get('/', (req, res) => res.send('Hello World'));
+
 app.route('/notes')
     .get(async (req, res) => {
         const notes = await Note.findAll();
