@@ -15,8 +15,9 @@ npm run seed needs to be executed inside the container
 use docker desktop for this or docker exec -it <containerid | containername>
 
 db:volume - to persist data
+
 app:volume - to update the container with changes - no need for rebuilding
 
 depends-on - so both services run in the same network; here: db not exposed; no ports
 
-usefull: https://www.youtube.com/watch?v=RHjXPN_h1YA
+useful: https://www.youtube.com/watch?v=RHjXPN_h1YA
