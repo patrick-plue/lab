@@ -9,6 +9,8 @@ services:
 
         volumes:
             - ./pgdata:/var/lib/postgresql/data
+        networks:
+            - my-custom-network
 
     express-app:
         build: .
@@ -21,3 +23,8 @@ services:
             - /app/node_modules
         depends_on:
             - db
+        networks:
+            - my-custom-network
+
+networks:
+    my-custom-network:
