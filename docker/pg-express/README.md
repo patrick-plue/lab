@@ -25,3 +25,4 @@ useful: https://www.youtube.com/watch?v=RHjXPN_h1YA
 ### network
 
 -   custom network is not necessary because docker compose up creates a network for the containers
+
