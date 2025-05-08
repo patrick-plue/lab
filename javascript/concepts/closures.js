@@ -1,8 +1,8 @@
 function runOnce(fn) {
     let count = 0;
-    function wrapper() {
+    function wrapper(...args) {
         if (count == 0) {
-            fn();
+            fn(...args);
             count++;
         }
     }
@@ -10,8 +10,13 @@ function runOnce(fn) {
     return wrapper;
 }
 
-let greetOnce = runOnce(() => console.log('Hello World'));
+let greetOnce = runOnce((name) => console.log(`Hello ${name}`));
 
-greetOnce();
-greetOnce();
-greetOnce();
+greetOnce('Karl');
+greetOnce('Hannah');
+greetOnce('Nobody');
+
+let addOnce = runOnce((a, b) => console.log(a + b));
+
+addOnce(3, 4);
+addOnce(12, 42);
