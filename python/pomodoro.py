@@ -1,12 +1,10 @@
 import time
 from os import system, name
-import sys
-import signal
 
 
 #just to test things
-seconds_per_minute = 60
-minutes_per_session= 30
+seconds_per_minute = 2
+minutes_per_session= 10
 minutes_per_break = 5
 
 
@@ -35,11 +33,11 @@ try:
             time.sleep(seconds_per_minute)
             clear()
 
-    for  i in range(minutes_per_break +1):
-        print("Break:", i, "minutes")
-        time.sleep(seconds_per_minute)
-        clear()
-    user_choice = input("Do you want another session?: yes or no? ")
+        for  i in range(minutes_per_break +1):
+            print("Break:", i, "minutes")
+            time.sleep(seconds_per_minute)
+            clear()
+        user_choice = input("Do you want another session?: yes or no? ")
 
 except KeyboardInterrupt:
     print("\nExiting")
