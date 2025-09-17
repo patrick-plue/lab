@@ -8,17 +8,15 @@ function createBox() {
 
 const trigger = document.getElementById('trigger');
 
-function observerCallback(entries) {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            const fragment = new DocumentFragment();
-            const boxes = new Array(10).fill().map(() => createBox());
-            for (let box of boxes) {
-                fragment.appendChild(box);
-            }
-            main.appendChild(fragment);
+function observerCallback([entry]) {
+    if (entry.isIntersecting) {
+        const fragment = new DocumentFragment();
+        const boxes = new Array(10).fill().map(() => createBox());
+        for (let box of boxes) {
+            fragment.appendChild(box);
         }
-    });
+        main.appendChild(fragment);
+    }
 }
 
 const observer = new IntersectionObserver(observerCallback, {
