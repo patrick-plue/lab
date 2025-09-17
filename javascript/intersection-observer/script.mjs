@@ -6,22 +6,23 @@ function createBox() {
     return box;
 }
 
-function observerCallback(entries, observer) {
+const trigger = document.getElementById('trigger');
+
+function observerCallback(entries) {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
-            entry.target.removeAttribute('id');
+            const fragment = new DocumentFragment();
             const boxes = new Array(10).fill().map(() => createBox());
-            boxes[5].setAttribute('id', 'trigger');
-            for (box of boxes) {
-                main.appendChild(box);
+            for (let box of boxes) {
+                fragment.appendChild(box);
             }
-            observer.observe(document.getElementById('trigger'));
+            main.appendChild(fragment);
         }
     });
 }
 
 const observer = new IntersectionObserver(observerCallback, {
-    threshold: 0.1,
+    threshold: 0.3,
 });
 
-observer.observe(document.getElementById('trigger'));
+observer.observe(trigger);
