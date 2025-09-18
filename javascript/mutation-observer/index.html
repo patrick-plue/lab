@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutation Observer</title>
+    <style>
+        section {
+            height: 50vh;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <h1>This is a text editor</h1>
+        <ul>
+            <li>/h1 - to create a h1 headline</li>
+            <li>/h2 - to create a h2 headline</li>
+            <li>/h3- to create a pargraph</li>
+        </ul>
+        <section id="editor" contenteditable>
+            <div>Write here</div>
+        </section>
+    </main>
+
+    <script>
+
+        const SUPPORTED_ELEMENTS = new Set([
+            '/h1',
+            '/h2',
+            '/h3'
+        ])
+
+
+        function createHeading(node) {
+            if (node.textContent === "/h1") {
+                const h1 = document.createElement("h1")
+                h1.textContent = "Heading H1"
+                return h1
+            } else if (node.textContent === "/h2") {
+                const h2 = document.createElement("h2")
+                h2.textContent = "Heading H2"
+                return h2
+            } else if (node.textContent === "/h3") {
+                const h3 = document.createElement("h3")
+                h3.textContent = "Heading H3"
+                return h3
+            }
+        }
+
+
+        const mutationObserver = new MutationObserver((mutations) => {
+            for (let mutation of mutations) {
+                if (mutation.type === "characterData" && SUPPORTED_ELEMENTS.has(mutation.target.textContent)) {
+                    const heading = createHeading(mutation.target)
+                    mutation.target.replaceWith(heading)
+                }
+            }
+        });
+
+        mutationObserver.observe(document.getElementById("editor"), {
+            subtree: true,
+            characterData: true
+        })
+
+    </script>
+</body>
+
+</html>
