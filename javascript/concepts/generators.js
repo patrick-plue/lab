@@ -62,3 +62,45 @@ console.log('range');
 for (let num of range(0, 10, 2)) {
 	console.log(num);
 }
+
+console.log('paginated and cached fetch with pokemon');
+
+async function* pokemonFetcher() {
+	let url = 'https://pokeapi.co/api/v2/pokemon/';
+	while (url) {
+		const response = await fetch(url);
+		const data = await response.json();
+		yield* data.results;
+		url = data.next;
+	}
+}
+function createPokedexController(pageSize = 20) {
+	const fetcher = pokemonFetcher();
+	const cache = [];
+
+	return {
+		async getPage(pageNumber) {
+			const startIndex = pageNumber * pageSize;
+			const endIndex = startIndex + pageSize;
+
+			while (cache.length < endIndex) {
+				const { value, done } = await fetcher.next();
+				if (done) break;
+				cache.push(value);
+			}
+
+			return cache.slice(startIndex, endIndex);
+		},
+	};
+}
+
+const pokedex = createPokedexController(20);
+
+const page1 = await pokedex.getPage(0);
+console.log(page1.map((p) => p.name));
+
+const page2 = await pokedex.getPage(1);
+console.log(page2.map((p) => p.name));
+
+const page1Again = await pokedex.getPage(0);
+console.log(page1Again.map((p) => p.name));
