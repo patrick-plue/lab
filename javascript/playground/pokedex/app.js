@@ -25,8 +25,8 @@ function createPokemonCard(pokemon, details) {
 	return box;
 }
 
+let isFetching = false;
 async function observerCallback([entry]) {
-	let isFetching;
 	if (entry.isIntersecting && !isFetching) {
 		try {
 			isFetching = true;
@@ -42,10 +42,15 @@ async function observerCallback([entry]) {
 async function* pokemonFetcher() {
 	let url = 'https://pokeapi.co/api/v2/pokemon/';
 	while (url) {
-		const response = await fetch(url);
-		const data = await response.json();
-		yield* data.results;
-		url = data.next;
+		try {
+			const response = await fetch(url);
+			if (!response.ok) throw new Error('Fetch failed');
+			const data = await response.json();
+			yield* data.results;
+			url = data.next;
+		} catch (e) {
+			yield { error: true };
+		}
 	}
 }
 
@@ -54,10 +59,16 @@ async function renderBatch(amount) {
 	const batchPromises = Array.from({ length: amount }, async () => {
 		const { value, done } = await pokemonFactory.next();
 		if (done) return null;
+		if (!value?.url) return failedToLoadCard();
 
-		const res = await fetch(value.url);
-		const details = await res.json();
-		return createPokemonCard(value, details);
+		try {
+			const res = await fetch(value.url);
+			const details = await res.json();
+
+			return createPokemonCard(value, details);
+		} catch (error) {
+			return failedToLoadCard();
+		}
 	});
 
 	const cards = await Promise.all(batchPromises);
@@ -67,4 +78,11 @@ async function renderBatch(amount) {
 	});
 
 	main.appendChild(fragment);
+}
+
+function failedToLoadCard() {
+	const card = document.createElement('div');
+	card.textContent = 'Faild to load';
+	card.classList.add('failed');
+	return card;
 }
